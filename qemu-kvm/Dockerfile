@@ -10,6 +10,7 @@ RUN set -x \
     ca-certificates \
     cloud-image-utils \
     curl \
+    cpu-checker \
     gdb \
     git \
     less \
