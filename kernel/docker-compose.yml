@@ -1,0 +1,20 @@
+version: "3"
+services:
+  cs5250:
+    hostname: cs5250-${USER}
+    image: cs5250
+    build:
+      context: .
+      args:
+        - USER
+        - KVM_GID
+    environment:
+      - USER
+    group_add:
+      - ${KVM_GID}
+    volumes:
+      - ./workspace/${USER}:/data
+    devices:
+      - /dev/kvm
+    ports:
+      - "${PORT}:22"
