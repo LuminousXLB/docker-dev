@@ -1,0 +1,16 @@
+version: "3"
+services:
+
+  petalinux-focal:
+    hostname: petalinux
+    image: private/petalinux:focal
+    build:
+      context: .
+      args:
+        - USER
+    ports:
+      - 22001:22
+    volumes:
+      - /tools/Xilinx/PetaLinux:/tools/Xilinx/PetaLinux
+      - /data/sswreleases:/home/${USER}/.plnx
+      - /home/${USER}/petalinux:/home/${USER}/petalinux
