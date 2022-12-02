@@ -7,6 +7,7 @@ RUN set -x \
     && sed -i 's/http:\/\/archive.ubuntu.com/http:\/\/sg.archive.ubuntu.com/g' /etc/apt/sources.list \
     && apt-get update \
     && apt-get install -y \
+        bear \
         build-essential \
         curl \
         git \

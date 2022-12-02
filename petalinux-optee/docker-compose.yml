@@ -11,6 +11,6 @@ services:
     ports:
       - 22001:22
     volumes:
-      - /tools/Xilinx/PetaLinux:/tools/Xilinx/PetaLinux
+      - /tools/Xilinx:/tools/Xilinx
       - /data/sswreleases:/home/${USER}/.plnx
       - /home/${USER}/petalinux:/home/${USER}/petalinux
