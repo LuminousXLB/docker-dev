@@ -126,7 +126,9 @@ RUN set -x \
         libhidapi-dev \
         libmpc-dev \
         libncurses5-dev \
+        libncursesw5 \
         libpixman-1-dev \
+        libpython2.7 \
         libssl-dev \
         libtool \
         make \
