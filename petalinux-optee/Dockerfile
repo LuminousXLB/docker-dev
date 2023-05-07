@@ -167,7 +167,8 @@ RUN set -x \
 USER ${USER}
 RUN set -x \
     && ssh-keygen -t ecdsa -f ~/.ssh/id_ecdsa -N '' \
-    && echo "[ -f /tools/Xilinx/PetaLinux/2021.1/settings.sh ] && source /tools/Xilinx/PetaLinux/2021.1/settings.sh" >> ~/.bash_aliases
+    && echo "# [ -f /tools/Xilinx/PetaLinux/2021.1/settings.sh ] && source /tools/Xilinx/PetaLinux/2021.1/settings.sh" >> ~/.bash_aliases \
+    && echo "[ -f /tools/Xilinx/PetaLinux/2021.2/settings.sh ] && source /tools/Xilinx/PetaLinux/2021.2/settings.sh" >> ~/.bash_aliases
 
 COPY --chown=1000:1000 authorized_keys /home/${USER}/.ssh/
 
