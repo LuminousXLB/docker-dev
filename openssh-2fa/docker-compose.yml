@@ -1,0 +1,7 @@
+services:
+  ssh2fa:
+    build: .
+    ports:
+      - "2222:22"
+    volumes:
+      - ./share:/share
