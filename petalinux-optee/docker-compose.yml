@@ -1,7 +1,6 @@
 version: "3"
 services:
-
-  petalinux-focal:
+  focal:
     hostname: petalinux
     image: private/petalinux:focal
     build:

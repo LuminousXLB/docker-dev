@@ -3,45 +3,36 @@ FROM ubuntu:focal
 ARG DEBIAN_FRONTEND=noninteractive
 
 # install common packages
+# setup locale
+# setup timezone
+# install petalinux dependencies
+# install optee dependencies
 RUN set -x \
     && sed -i 's/http:\/\/archive.ubuntu.com/http:\/\/sg.archive.ubuntu.com/g' /etc/apt/sources.list \
     && apt-get update \
+    && apt-get install -y locales \
+    && echo "en_SG.UTF-8 UTF-8" >>/etc/locale.gen \
+    && echo "en_US.UTF-8 UTF-8" >>/etc/locale.gen \
+    && locale-gen \
+    && apt-get install -y tzdata \
+    && ln -fs /usr/share/zoneinfo/Asia/Singapore /etc/localtime \
+    && dpkg-reconfigure --frontend noninteractive tzdata \
     && apt-get install -y \
         bear \
         build-essential \
         curl \
         git \
         htop \
-        locales \
         openssh-server \
         python3-pip \
         rsync \
         rsyslog \
         sudo \
-        tzdata \
         unzip \
         vim \
         xauth \
-    && rm -rf /var/lib/apt/lists/* \
-    && pip3 install --no-cache-dir cmake
-
-# set locale timezone and
-RUN set -x \
-    && echo "en_SG.UTF-8 UTF-8" >> /etc/locale.gen \
-    && echo "en_US.UTF-8 UTF-8" >> /etc/locale.gen \
-    && locale-gen \
-    && ln -fs /usr/share/zoneinfo/Asia/Singapore /etc/localtime \
-    && dpkg-reconfigure --frontend noninteractive tzdata
-
-# prepare sshd
-RUN set -x \
-    && ssh-keygen -A \
-    && mkdir /run/sshd \
-    && echo "PasswordAuthentication no" >> /etc/ssh/sshd_config \
-    && echo "X11UseLocalhost no" >> /etc/ssh/sshd_config
-
-# install petlinux dependencies
-RUN set -x \
+    && pip3 install --no-cache-dir cmake \
+    && yes | unminimize \
     && dpkg --add-architecture i386 \
     && apt-get update \
     && apt-get install -y \
@@ -91,18 +82,10 @@ RUN set -x \
         xterm \
         xz-utils \
         zlib1g-dev \
-        zlib1g-dev \
         zlib1g:i386 \
-    && rm -rf /var/lib/apt/lists/* \
     && pip3 install --no-cache-dir ninja meson \
-    && ln -sf /bin/bash /bin/sh
-
-# install optee depenedncies
-RUN set -x \
-    && apt-get update \
-    && sudo apt install -y \
-        # android-tools-adb \
-        # android-tools-fastboot \
+    && ln -sf /bin/bash /bin/sh \
+    && apt-get install -y \
         autoconf \
         automake \
         bc \
@@ -149,13 +132,20 @@ RUN set -x \
         zlib1g-dev \
     && rm -rf /var/lib/apt/lists/*
 
-# Get REPO
+# install repo
 RUN set -x \
     && export REPO=$(mktemp /tmp/repo.XXXXXXXXX) \
     && curl -o ${REPO} https://storage.googleapis.com/git-repo-downloads/repo \
     && gpg --recv-key 8BB9AD793E8E6153AF0F9A4416530D5E920F5C65 \
     && curl -s https://storage.googleapis.com/git-repo-downloads/repo.asc | gpg --verify - ${REPO} \
     && install -m 755 ${REPO} /usr/local/bin/repo
+
+# prepare sshd
+RUN set -x \
+    && ssh-keygen -A \
+    && mkdir /run/sshd \
+    && echo "PasswordAuthentication no" >>/etc/ssh/sshd_config \
+    && echo "X11UseLocalhost no" >>/etc/ssh/sshd_config
 
 # add default user
 ARG USER=ubuntu
@@ -167,8 +157,7 @@ RUN set -x \
 USER ${USER}
 RUN set -x \
     && ssh-keygen -t ecdsa -f ~/.ssh/id_ecdsa -N '' \
-    && echo "# [ -f /tools/Xilinx/PetaLinux/2021.1/settings.sh ] && source /tools/Xilinx/PetaLinux/2021.1/settings.sh" >> ~/.bash_aliases \
-    && echo "[ -f /tools/Xilinx/PetaLinux/2021.2/settings.sh ] && source /tools/Xilinx/PetaLinux/2021.2/settings.sh" >> ~/.bash_aliases
+    && echo "[ -f /tools/Xilinx/PetaLinux/2021.2/settings.sh ] && source /tools/Xilinx/PetaLinux/2021.2/settings.sh" >>~/.bash_aliases
 
 COPY --chown=1000:1000 authorized_keys /home/${USER}/.ssh/
 
