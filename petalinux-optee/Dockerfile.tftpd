@@ -1,0 +1,7 @@
+FROM alpine:latest
+
+RUN apk add --update --no-cache tftp-hpa
+
+EXPOSE 69/udp
+
+CMD in.tftpd --foreground

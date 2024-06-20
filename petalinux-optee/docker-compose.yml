@@ -1,15 +1,53 @@
-version: "3"
 services:
   focal:
-    hostname: petalinux
+    hostname: plnx-22
     image: private/petalinux:focal
     build:
       context: .
       args:
         - USER
+        - CODENAME=focal
     ports:
-      - 22001:22
+      - 52004:22
     volumes:
-      - /tools/Xilinx:/tools/Xilinx
-      - /data/sswreleases:/home/${USER}/.plnx
       - /home/${USER}/petalinux:/home/${USER}/petalinux
+      - /tools/Xilinx:/tools/Xilinx
+      - /tools/Xilinx/sswreleases/2022.2:/home/${USER}/.plnx/2022.2
+      - tftpboot:/tftpboot
+
+  jammy:
+    hostname: plnx-23
+    image: private/petalinux:jammy
+    build:
+      context: .
+      args:
+        - USER
+        - CODENAME=jammy
+    ports:
+      - 52204:22
+    volumes:
+      - /home/${USER}/petalinux:/home/${USER}/petalinux
+      - /tools/Xilinx:/tools/Xilinx
+      - /tools/Xilinx/sswreleases/2023.2:/home/${USER}/.plnx/2023.2
+      - tftpboot:/tftpboot
+
+  tftpd:
+    hostname: tftpd
+    image: private/tftpd
+    build:
+      dockerfile_inline: |
+        FROM alpine:latest
+        RUN apk add --no-cache tftp-hpa
+    command: in.tftpd --foreground -v
+    ports:
+      - 69:69/udp
+    volumes:
+      - tftpboot:/tftpboot
+
+volumes:
+  tftpboot:
+    driver: tftpboot
+    driver_opts:
+      type: tmpfs
+      device: tmpfs
+      o: size=512M,uid=1000,gid=1000
