@@ -1,6 +1,6 @@
 services:
   focal:
-    hostname: plnx-22
+    hostname: plnx-21
     image: private/petalinux:focal
     build:
       context: .
@@ -12,7 +12,8 @@ services:
     volumes:
       - /home/${USER}/petalinux:/home/${USER}/petalinux
       - /tools/Xilinx:/tools/Xilinx
-      - /tools/Xilinx/sswreleases/2022.2:/home/${USER}/.plnx/2022.2
+      - /tools/Xilinx/sswreleases/2021.2:/home/${USER}/.plnx/2021.2
+      - ./envs/plnx21.sh:/home/${USER}/.bash_aliases
       - tftpboot:/tftpboot
 
   jammy:
@@ -29,6 +30,7 @@ services:
       - /home/${USER}/petalinux:/home/${USER}/petalinux
       - /tools/Xilinx:/tools/Xilinx
       - /tools/Xilinx/sswreleases/2023.2:/home/${USER}/.plnx/2023.2
+      - ./envs/plnx23.sh:/home/${USER}/.bash_aliases
       - tftpboot:/tftpboot
 
   tftpd:

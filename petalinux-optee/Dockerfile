@@ -77,9 +77,5 @@ RUN set -x \
     && curl -sSfL https://raw.githubusercontent.com/ajeetdsouza/zoxide/main/install.sh | sh \
     && echo 'eval "$(zoxide init bash)"' >>~/.profile
 
-# source PetaLinux settings on login
-COPY setup/envs-petalinux.sh /tmp/envs-petalinux.sh
-RUN /tmp/envs-petalinux.sh
-
 USER root
 CMD service ssh start && tail -f /dev/null
