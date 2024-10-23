@@ -14,7 +14,7 @@ services:
       - /tools/Xilinx:/tools/Xilinx
       - /tools/Xilinx/sswreleases/2021.2:/home/${USER}/.plnx/2021.2
       - ./envs/plnx21.sh:/home/${USER}/.bash_aliases
-      - tftpboot:/tftpboot
+      - /tftpboot:/tftpboot
 
   jammy:
     hostname: plnx-23
@@ -31,7 +31,7 @@ services:
       - /tools/Xilinx:/tools/Xilinx
       - /tools/Xilinx/sswreleases/2023.2:/home/${USER}/.plnx/2023.2
       - ./envs/plnx23.sh:/home/${USER}/.bash_aliases
-      - tftpboot:/tftpboot
+      - /tftpboot:/tftpboot
 
   tftpd:
     hostname: tftpd
@@ -40,16 +40,8 @@ services:
       dockerfile_inline: |
         FROM alpine:latest
         RUN apk add --no-cache tftp-hpa
-    command: in.tftpd --foreground -v
+    command: in.tftpd --secure --foreground --verbose /tftpboot
     ports:
       - 69:69/udp
     volumes:
-      - tftpboot:/tftpboot
-
-volumes:
-  tftpboot:
-    driver: local
-    driver_opts:
-      type: tmpfs
-      device: tmpfs
-      o: size=4G,uid=1000,gid=1000
+      - /tftpboot:/tftpboot
