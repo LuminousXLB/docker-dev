@@ -15,6 +15,8 @@ services:
       - /tools/Xilinx/sswreleases/2021.2:/home/${USER}/.plnx/2021.2
       - ./envs/plnx21.sh:/home/${USER}/.bash_aliases
       - /tftpboot:/tftpboot
+    depends_on:
+      - tftpd
 
   jammy:
     hostname: plnx-23
@@ -32,6 +34,26 @@ services:
       - /tools/Xilinx/sswreleases/2023.2:/home/${USER}/.plnx/2023.2
       - ./envs/plnx23.sh:/home/${USER}/.bash_aliases
       - /tftpboot:/tftpboot
+    depends_on:
+      - tftpd
+
+  noble:
+    hostname: plnx-24
+    image: private/petalinux:noble
+    build:
+      context: ./2024.2
+      args:
+        - USER
+    ports:
+      - 52404:22
+    volumes:
+      - /home/${USER}/fpga:/home/${USER}/fpga
+      - /tools/Xilinx:/tools/Xilinx
+      - /tools/Xilinx/sswreleases/2024.2:/home/${USER}/.plnx/2024.2
+      # - ./envs/plnx23.sh:/home/${USER}/.bash_aliases
+      - /tftpboot:/tftpboot
+    depends_on:
+      - tftpd
 
   tftpd:
     hostname: tftpd
